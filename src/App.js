@@ -9,7 +9,9 @@ const App = () => (
   <Router>
     <div className="ide-layout">
       <aside className="sidebar">
-        <h2>linq.red</h2>
+      <h2>
+        linq.<span className="red-text">red</span>
+      </h2>
         <nav>
           <ul>
             <li><Link to="/register">Register</Link></li>

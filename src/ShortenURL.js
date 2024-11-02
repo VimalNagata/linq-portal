@@ -12,7 +12,7 @@ const ShortenURL = () => {
     setError(null);
 
     try {
-      const response = await fetch('https://linq.red/shorten', {
+      const response = await fetch('https://linq.red/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,6 +31,11 @@ const ShortenURL = () => {
     } catch (err) {
       setError('An error occurred. Please try again.');
     }
+  };
+
+  const handleCopyURL = () => {
+    navigator.clipboard.writeText(shortURL);
+    alert('Short URL copied to clipboard!');
   };
 
   return (
@@ -54,7 +59,13 @@ const ShortenURL = () => {
         <button type="submit">Shorten</button>
       </form>
       {shortURL && (
-        <p>Short URL: <a href={shortURL} target="_blank" rel="noopener noreferrer">{shortURL}</a></p>
+        <div className="success-message">
+          <p>Short URL:</p>
+          <div className="short-url-container">
+            <a href={shortURL} target="_blank" rel="noopener noreferrer" className="short-url-link">{shortURL}</a>
+            <button className="copy-button" onClick={handleCopyURL}>Copy URL</button>
+          </div>
+        </div>
       )}
       {error && <p className="error-message">{error}</p>}
     </div>

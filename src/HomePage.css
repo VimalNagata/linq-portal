@@ -1,7 +1,9 @@
 /* HomePage.css */
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
     margin: 0;
     padding: 0;
   }
@@ -12,14 +14,15 @@ body {
     align-items: center;
     text-align: center;
     padding: 50px;
-    color: #333;
+    color: #e0e0e0;
   }
   
   h1 {
     font-size: 2.5em;
     font-weight: 700;
-    color: #444;
+    color: #ffffff;
     margin-bottom: 0.5em;
+    font-family: 'Inter', Arial, sans-serif;
   }
   
   p {
@@ -27,6 +30,7 @@ body {
     max-width: 600px;
     line-height: 1.6;
     margin-bottom: 2em;
+    color: #cccccc;
   }
   
   .homepage-buttons {
@@ -41,6 +45,8 @@ body {
     border-radius: 5px;
     text-decoration: none;
     font-size: 1em;
+    font-weight: bold;
+    font-family: 'Inter', Arial, sans-serif;
     transition: background-color 0.3s ease;
   }
   
