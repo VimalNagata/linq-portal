@@ -1,4 +1,4 @@
-// Updated ShortenURL.js
+// ShortenURL.js
 import React, { useState } from 'react';
 
 const ShortenURL = () => {
@@ -12,7 +12,7 @@ const ShortenURL = () => {
     setError(null);
 
     try {
-      const response = await fetch('https://linq.red/', {
+      const response = await fetch('https://linq.red/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ const ShortenURL = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>URL Shortener</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -56,7 +56,7 @@ const ShortenURL = () => {
       {shortURL && (
         <p>Short URL: <a href={shortURL} target="_blank" rel="noopener noreferrer">{shortURL}</a></p>
       )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

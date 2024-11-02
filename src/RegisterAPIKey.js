@@ -11,7 +11,6 @@ const RegisterAPIKey = () => {
     setError(null);
 
     try {
-      // Call the Lambda function with ?action=register
       const response = await fetch('https://linq.red/?action=register', {
         method: 'POST',
         headers: {
@@ -31,11 +30,11 @@ const RegisterAPIKey = () => {
     } catch (err) {
       setError('An error occurred while registering. Please check your input and try again.');
       console.error('Registration error:', err);
-  }
+    }
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>Register for an API Key</h1>
       <form onSubmit={handleRegister}>
         <input
@@ -48,15 +47,13 @@ const RegisterAPIKey = () => {
         <button type="submit">Register</button>
       </form>
       {apiKey && (
-        <div>
+        <div className="success-message">
           <p>Your API Key:</p>
-          <p style={{ fontWeight: 'bold', wordBreak: 'break-all' }}>{apiKey}</p>
-          <p style={{ color: 'blue', fontSize: 'small' }}>
-            (Save this API key securely; you will need it to access the URL shortening service.)
-          </p>
+          <p>{apiKey}</p>
+          <p>(Save this API key securely; you will need it to access the URL shortening service.)</p>
         </div>
       )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };
