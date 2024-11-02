@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14 # Adjust based on your Node.js version
+    commands:
+      - echo "Installing dependencies"
+      - npm install
+  build:
+    commands:
+      - echo "Building the React app"
+      - npm run build
+  post_build:
+    commands:
+      - echo "Packaging the build artifacts"
+      - aws s3 sync build/ s3://linq-red-react-app-deployments/build/

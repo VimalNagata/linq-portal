@@ -1,0 +1,4 @@
+version: 0.0
+resources:
+  - destination: s3://linq-red-portal-deployments/build/
+    target: '/var/www/html'  # Adjust path as necessary for your environment
