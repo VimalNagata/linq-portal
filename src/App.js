@@ -14,8 +14,8 @@ const App = () => (
       </h2>
         <nav>
           <ul>
-            <li><Link to="/shorten">Shorten an URL</Link></li>
-            <li><Link to="/register">Get API Key</Link></li>
+            <li><Link to="/shorten">Shorten a Link</Link></li>
+            <li><Link to="/register">API access</Link></li>
           </ul>
         </nav>
       </aside>
