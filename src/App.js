@@ -14,16 +14,16 @@ const App = () => (
       </h2>
         <nav>
           <ul>
-            <li><Link to="/register">Register</Link></li>
             <li><Link to="/shorten">Shorten an URL</Link></li>
+            <li><Link to="/register">Get API Key</Link></li>
           </ul>
         </nav>
       </aside>
       <main className="main-content">
         <Routes>
-          <Route path="/register" element={<RegisterAPIKey />} />
           <Route path="/shorten" element={<ShortenURL />} />
-          <Route path="/" element={<div>Select a tool from the Navigator</div>} />
+          <Route path="/register" element={<RegisterAPIKey />} />
+          <Route path="/" element={<ShortenURL />} />
         </Routes>
       </main>
     </div>
