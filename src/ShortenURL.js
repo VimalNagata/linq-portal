@@ -1,5 +1,6 @@
 // ShortenURL.js
 import React, { useState } from 'react';
+import './ShortenURL.css'; // Add CSS for styling
 
 const ShortenURL = () => {
   const [longURL, setLongURL] = useState('');
@@ -15,7 +16,7 @@ const ShortenURL = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'uXQ1FBRW2I9ESih8QzH2m8OFdESF7Jzb22AwTWQW' // Replace with your admin or default API key
+          'x-api-key': 'uXQ1FBRW2I9ESih8QzH2m8OFdESF7Jzb22AwTWQW'
         },
         body: JSON.stringify({ email })
       });
@@ -29,7 +30,6 @@ const ShortenURL = () => {
       }
     } catch (err) {
       setError('Failed to retrieve API key. Please try again.');
-      console.error('API Key Fetch Error:', err);
       return null;
     }
   };
@@ -78,22 +78,26 @@ const ShortenURL = () => {
 
   return (
     <div className="container">
-      <h1>URL Shortener</h1>
+      <h1>Shorten a link</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="url"
-          placeholder="Enter long URL"
-          value={longURL}
-          onChange={(e) => setLongURL(e.target.value)}
-          required
-        />
+        <div className="input-container">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label>Email</label>
+        </div>
+        <div className="input-container">
+          <input
+            type="url"
+            value={longURL}
+            onChange={(e) => setLongURL(e.target.value)}
+            required
+          />
+          <label>Long URL</label>
+        </div>
         <button type="submit" disabled={loading}>
           {loading ? 'Processing...' : 'Shorten'}
         </button>
