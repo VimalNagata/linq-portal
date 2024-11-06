@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
+import { FaDownload, FaClipboard } from 'react-icons/fa'; // Import icons from react-icons
 import './ShortenURL.css';
 
 const ShortenURL = () => {
@@ -8,18 +10,17 @@ const ShortenURL = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const MAX_RETRIES = 2; // Number of retries (one retry with the fallback API key)
-  const RETRY_DELAY = 3000; // Delay between retries in milliseconds
+  const MAX_RETRIES = 2;
+  const RETRY_DELAY = 3000;
   const FALLBACK_API_KEY = 'uXQ1FBRW2I9ESih8QzH2m8OFdESF7Jzb22AwTWQW';
 
-  // Fetch API key based on email
   const fetchApiKey = async (email) => {
     try {
       const response = await fetch('https://linq.red/?action=register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': FALLBACK_API_KEY // Use fallback key to register new keys
+          'x-api-key': FALLBACK_API_KEY
         },
         body: JSON.stringify({ email })
       });
@@ -32,12 +33,11 @@ const ShortenURL = () => {
         return null;
       }
     } catch (err) {
-      console.error('Failed to retrieve API key. Please try again.');
+      console.error('Failed to retrieve API key.');
       return null;
     }
   };
 
-  // Retry mechanism for shortening URL with fallback key on the second attempt
   const retryShortenURL = async (apiKey, attempt = 1) => {
     const apiKeyToUse = attempt === 2 ? FALLBACK_API_KEY : apiKey;
     try {
@@ -53,53 +53,62 @@ const ShortenURL = () => {
       const data = await response.json();
       if (response.ok) {
         setShortURL(data.short_url);
-        return true; // Success
+        return true;
       } else {
         console.error(data.error || 'Error shortening URL');
-        return false; // Failure
+        return false;
       }
     } catch (err) {
-      console.error('An error occurred while shortening the URL. Please try again.');
-      return false; // Failure
+      console.error('Error occurred while shortening the URL.');
+      return false;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear any previous errors
-    setShortURL(null); // Clear any previous short URL
+    setError(null);
+    setShortURL(null);
     setLoading(true);
 
-    // Get the API key for the provided email
     const apiKey = await fetchApiKey(email);
     if (!apiKey) {
       setLoading(false);
-      setError('Failed to retrieve API key. Please try again.');
-      return; // Exit if there’s an error fetching the API key
+      setError('Failed to retrieve API key.');
+      return;
     }
 
-    // Attempt to shorten the URL with retry mechanism
     let success = false;
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       success = await retryShortenURL(apiKey, attempt);
-      if (success) break; // Exit loop if successful
+      if (success) break;
 
       if (attempt < MAX_RETRIES) {
-        // Wait before retrying
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
       }
     }
 
-    // Show error message only if all retries fail
     if (!success) {
-      setError('Failed to shorten URL after multiple attempts. Please try again later.');
+      setError('Failed to shorten URL after multiple attempts.');
     }
     setLoading(false);
   };
 
   const handleCopyURL = () => {
     navigator.clipboard.writeText(shortURL);
-    alert('Short URL copied to clipboard!');
+    alert('Short URL copied to clipboard: ' + shortURL);
+  };
+
+  const handleDownloadQRCode = () => {
+    const svg = document.querySelector('.qr-code-container svg');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'qrcode.svg';
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -129,13 +138,26 @@ const ShortenURL = () => {
         </button>
       </form>
       {shortURL && (
-        <div className="success-message">
-          <p>Short URL:</p>
-          <div className="short-url-container">
-            <a href={shortURL} target="_blank" rel="noopener noreferrer" className="short-url-link">{shortURL}</a>
-            <button className="copy-button" onClick={handleCopyURL}>Copy URL</button>
-          </div>
-        </div>
+         <div className="success-message">
+          
+         <div className="qr-code-box">
+           <QRCodeSVG value={shortURL} size={128} />
+           
+           <button className="download-button" onClick={handleDownloadQRCode}>
+             <FaDownload />
+           </button>
+         </div>
+         <div className="url-box">
+           <a href={shortURL} target="_blank" rel="noopener noreferrer" className="short-url-link">
+             {shortURL}
+           </a>
+           <button className="copy-button" onClick={handleCopyURL}>
+             <FaClipboard />
+           </button>
+         </div>
+         <div className="url-box">{longURL}</div> 
+       </div>
+        
       )}
       {error && <p className="error-message">{error}</p>}
     </div>
