@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { FaDownload, FaClipboard } from 'react-icons/fa'; // Import icons from react-icons
 import './ShortenURL.css';
@@ -9,6 +9,7 @@ const ShortenURL = () => {
   const [shortURL, setShortURL] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const qrCodeRef = useRef(null);
 
   const MAX_RETRIES = 2;
   const RETRY_DELAY = 3000;
@@ -99,16 +100,23 @@ const ShortenURL = () => {
   };
 
   const handleDownloadQRCode = () => {
-    const svg = document.querySelector('.qr-code-container svg');
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
+    const svgElement = qrCodeRef.current.querySelector('svg');
+    if (svgElement) {
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'qrcode.svg';
-    link.click();
-    URL.revokeObjectURL(url);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = svgUrl;
+      downloadLink.download = 'QRCode.svg';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(svgUrl);
+    } else {
+      console.error('QR code element not found');
+    }
   };
 
   return (
@@ -140,7 +148,7 @@ const ShortenURL = () => {
       {shortURL && (
          <div className="success-message">
           
-         <div className="qr-code-box">
+         <div className="qr-code-box" ref={qrCodeRef}>
            <QRCodeSVG value={shortURL} size={128} />
            
            <button className="download-button" onClick={handleDownloadQRCode}>
