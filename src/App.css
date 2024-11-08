@@ -1,5 +1,74 @@
 /* App.css */
 
+/* General Styles for Web (Desktop) */
+
+/* Original styles here... */
+
+/* Mobile Styling - Applied when screen width is 768px or smaller */
+@media (max-width: 768px) {
+  /* Main layout styling */
+  .ide-layout {
+    flex-direction: column;
+}
+
+.sidebar {
+    width: 100%;
+    padding: 10px;
+    box-shadow: none;
+}
+
+  /* Main content adjustments */
+  .main-content {
+      padding: 15px;
+      width: 100%;
+      box-shadow: none;
+  }
+
+  .container {
+      width: 100%;
+      padding: 15px;
+      box-shadow: none;
+  }
+
+  /* Header */
+  h1 {
+      font-size: 1.4em;
+  }
+
+  /* Form adjustments */
+  form {
+      gap: 10px;
+      padding: 15px;
+  }
+
+  input[type="email"],
+  input[type="url"],
+  input[type="text"],
+  select {
+      font-size: 1em;
+      padding: 8px;
+  }
+
+  button {
+      font-size: 1em;
+      padding: 10px;
+  }
+
+  /* Message and code block adjustments */
+  .success-message, .error-message, .code-block {
+      font-size: 0.9em;
+      padding: 10px;
+      border-radius: 5px;
+  }
+
+  /* Download and Copy buttons */
+  .download-button, .copy-button {
+      width: 35px;
+      height: 35px;
+      font-size: 1em;
+  }
+}
+
 .red-text {
   color: #ff4c4c; /* Adjust this hex code to your preferred shade of red */
 }
