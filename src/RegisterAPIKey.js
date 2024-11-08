@@ -1,6 +1,9 @@
 // RegisterAPIKey.js
 import React, { useState } from 'react';
-import './RegisterAPIKey.css'; // Import the CSS file
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import './App.css'; // Import the CSS file
+import { FaDownload, FaClipboard } from 'react-icons/fa'; 
 
 const RegisterAPIKey = () => {
   const [email, setEmail] = useState('');
@@ -69,13 +72,36 @@ const RegisterAPIKey = () => {
       </form>
       
       {apiKey && (
+        <div>
         <div className="success-message">
-          <p>Your API Key:</p>
-          <code>{apiKey}</code>
+          <p>Your API Key:           <button className="copy-button" onClick={handleCopyCode}>
+             <FaClipboard />
+           </button></p>
+          <SyntaxHighlighter language="javascript" style={dracula}>{apiKey}</SyntaxHighlighter>
           <p style={{ color: 'lightgray', fontSize: 'small' }}>
             (Save this API key securely; you will need it to access the URL shortening service.)
           </p>
-          <button className="copy-button" onClick={handleCopyCode}>Copy API Key</button>
+
+        </div>
+        <div className="success-message">
+        <p>Sample Javascript:</p>
+        <SyntaxHighlighter language="javascript" style={dracula}>
+{`fetch('https://linq.red/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': '${apiKey}' // Use your generated API key here
+  },
+  body: JSON.stringify({ long_url: 'https://example.com' })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Shortened URL:', data.short_url);
+})
+.catch(error => console.error('Error:', error));`}
+          </SyntaxHighlighter>
+
+        </div>
         </div>
       )}
       
