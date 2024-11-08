@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { FaDownload, FaClipboard } from 'react-icons/fa'; // Import icons from react-icons
-import './ShortenURL.css';
+import './App.css';
 
 const ShortenURL = () => {
   const [longURL, setLongURL] = useState('');
@@ -146,24 +146,26 @@ const ShortenURL = () => {
         </button>
       </form>
       {shortURL && (
-         <div className="success-message">
+         <div >
           
-         <div className="qr-code-box" ref={qrCodeRef}>
+         <div className="success-message" ref={qrCodeRef}>
+         <p>QR Code:</p>
            <QRCodeSVG value={shortURL} size={128} />
-           
+           &nbsp;
            <button className="download-button" onClick={handleDownloadQRCode}>
              <FaDownload />
            </button>
          </div>
-         <div className="url-box">
+         <div className="success-message">
+         <p>Short URL:</p>
            <a href={shortURL} target="_blank" rel="noopener noreferrer" className="short-url-link">
              {shortURL}
-           </a>
+           </a> &nbsp;
            <button className="copy-button" onClick={handleCopyURL}>
              <FaClipboard />
            </button>
          </div>
-         <div className="url-box">{longURL}</div> 
+        
        </div>
         
       )}
