@@ -10,7 +10,9 @@ import SignUp from './auth/SignUp';
 import Profile from './auth/Profile';
 import ForgotPassword from './auth/ForgotPassword';
 import HomePage from './HomePage';
+import APIDocumentation from './APIDocumentation';
 import './App.css';
+import './api-docs.css';
 
 // Create a protected route component
 const ProtectedRoute = ({ children }) => {
@@ -131,6 +133,7 @@ const AppContent = () => {
             </ProtectedRoute>
           } />
           <Route path="/signout" element={<SignOut />} />
+          <Route path="/api-docs" element={<APIDocumentation />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </main>
