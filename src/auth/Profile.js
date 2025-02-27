@@ -40,7 +40,7 @@ const Profile = () => {
 
   return (
     <div className="card">
-      <h1>User Profile</h1>
+      <h1>My Account</h1>
       
       <div className="profile-section">
         <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginBottom: '15px'}}>Account Information</h2>

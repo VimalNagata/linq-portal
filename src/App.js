@@ -74,7 +74,7 @@ const AppContent = () => {
             {currentUser ? (
               <>
                 <li><Link className={isActive('/shorten')} to="/shorten" onClick={closeMenu}>Shorten URL</Link></li>
-                <li><Link className={isActive('/profile')} to="/profile" onClick={closeMenu}>My Profile</Link></li>
+                <li><Link className={isActive('/profile')} to="/profile" onClick={closeMenu}>My Account</Link></li>
                 <li><Link to="/signout" onClick={closeMenu}>Sign Out</Link></li>
               </>
             ) : (
