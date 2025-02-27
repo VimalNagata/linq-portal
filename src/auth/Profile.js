@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaClipboard } from 'react-icons/fa';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAuth } from './AuthContext';
 import '../App.css';
 
@@ -39,30 +39,39 @@ const Profile = () => {
   }
 
   return (
-    <div className="container">
+    <div className="card">
       <h1>User Profile</h1>
       
-      <div className="success-message">
-        <p><strong>Email:</strong> {currentUser.email}</p>
-        <p><strong>Created:</strong> {new Date(currentUser.created_at).toLocaleDateString()}</p>
+      <div className="profile-section">
+        <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginBottom: '15px'}}>Account Information</h2>
+        <div className="profile-info">
+          <div className="info-row">
+            <span className="info-label">Email:</span>
+            <span className="info-value">{currentUser.email}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Created:</span>
+            <span className="info-value">{new Date(currentUser.created_at).toLocaleDateString()}</span>
+          </div>
+        </div>
         
         {apiKey && (
-          <div>
-            <p><strong>API Key:</strong></p>
-            <div className="api-key-container">
-              <code>{apiKey}</code>
-              <button className="copy-button" onClick={handleCopyAPIKey}>
+          <div style={{marginTop: '30px'}}>
+            <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginBottom: '15px'}}>Your API Key</h2>
+            <div className="bright-api-key-container">
+              <code style={{color: 'var(--primary-color)', fontWeight: '500'}}>{apiKey}</code>
+              <button className="bright-copy-button" onClick={handleCopyAPIKey}>
                 <FaClipboard />
               </button>
             </div>
             
-            <h3 style={{marginTop: '20px'}}>How to use your API key</h3>
-            <p>Use one of these code snippets to shorten URLs from your application:</p>
+            <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginTop: '30px', marginBottom: '15px'}}>Developer Resources</h2>
+            <p style={{color: 'var(--text-dark)', marginBottom: '15px'}}>Use these code snippets to integrate with our API:</p>
             
             <div style={{marginTop: '15px'}}>
               <p><strong>cURL</strong></p>
               <div style={{position: 'relative'}}>
-                <SyntaxHighlighter language="bash" style={vscDarkPlus}>
+                <SyntaxHighlighter language="bash" style={vs}>
                   {`curl -X POST 'https://linq.red/urls' \\
   -H 'Content-Type: application/json' \\
   -H 'x-api-key: ${apiKey}' \\
@@ -84,7 +93,7 @@ const Profile = () => {
             <div style={{marginTop: '15px'}}>
               <p><strong>JavaScript (fetch)</strong></p>
               <div style={{position: 'relative'}}>
-                <SyntaxHighlighter language="javascript" style={vscDarkPlus}>
+                <SyntaxHighlighter language="javascript" style={vs}>
                   {`const response = await fetch('https://linq.red/urls', {
   method: 'POST',
   headers: {
@@ -124,7 +133,7 @@ const shortUrl = data.short_url;`)}
             <div style={{marginTop: '15px'}}>
               <p><strong>Python (requests)</strong></p>
               <div style={{position: 'relative'}}>
-                <SyntaxHighlighter language="python" style={vscDarkPlus}>
+                <SyntaxHighlighter language="python" style={vs}>
                   {`import requests
 import json
 
@@ -168,20 +177,22 @@ short_url = data["short_url"]`)}
         )}
       </div>
       
-      <button 
-        onClick={() => navigate('/shorten')}
-        style={{ marginTop: '20px', marginRight: '10px' }}
-      >
-        Shorten URL
-      </button>
-      
-      <button 
-        onClick={handleSignOut}
-        disabled={loading}
-        style={{ marginTop: '20px' }}
-      >
-        {loading ? 'Processing...' : 'Sign Out'}
-      </button>
+      <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '30px'}}>
+        <button 
+          className="primary-button"
+          onClick={() => navigate('/shorten')}
+        >
+          Shorten URL
+        </button>
+        
+        <button 
+          className="secondary-button"
+          onClick={handleSignOut}
+          disabled={loading}
+        >
+          {loading ? 'Processing...' : 'Sign Out'}
+        </button>
+      </div>
     </div>
   );
 };
