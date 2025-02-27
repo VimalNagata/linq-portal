@@ -175,10 +175,10 @@ form {
   flex-direction: column;
   gap: 15px;
   margin: auto;
-  background-color: #333333;
+  background-color: var(--background-white);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 input[type="email"],
@@ -186,11 +186,11 @@ input[type="url"],
 input[type="text"] {
   padding: 12px;
   border-radius: 5px;
-  border: 1px solid #444;
+  border: 1px solid var(--background-medium);
   font-size: 1em;
   width: 100%;
-  color: #e0e0e0;
-  background-color: #2b2b2b;
+  color: var(--text-dark);
+  background-color: var(--background-light);
   font-family: 'Inter', Arial, sans-serif;
 }
 
@@ -212,11 +212,11 @@ button:hover {
 
 /* Success Message Styling */
 .success-message {
-  background-color: #2e2e2e;
-  color: #e0e0e0;
+  background-color: rgba(75, 181, 67, 0.1);
+  color: var(--success-color);
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid #3c3c3c;
+  border: 1px solid rgba(75, 181, 67, 0.3);
   font-size: 1em;
   margin-top: 15px;
   text-align: left;
@@ -252,28 +252,30 @@ button:hover {
 
 .success-message code {
   display: block;
-  background-color: #3a3a3a;
+  background-color: var(--background-light);
   padding: 10px;
   border-radius: 5px;
-  color: #d1f7c4;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  color: var(--text-dark);
+  font-family: 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.9em;
   word-break: break-all;
+  border: 1px solid var(--background-medium);
 }
 
 /* Code Block Styling with Syntax Highlighting */
 .code-block {
   position: relative;
-  background-color: #2e2e2e;
-  color: #dcdcdc;
+  background-color: var(--background-light);
+  color: var(--text-dark);
   padding: 15px;
   border-radius: 8px;
   font-size: 1em;
   line-height: 1.5;
   overflow-x: auto;
   margin-top: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  box-shadow: var(--shadow-sm);
+  font-family: 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace;
+  border: 1px solid var(--background-medium);
 }
 
 .code-block pre {
@@ -321,13 +323,14 @@ button:hover {
 
 /* Error message styling */
 .error-message {
-  color: #ef9a9a;
-  background-color: #b71c1c;
-  padding: 10px;
+  color: var(--error-color);
+  background-color: rgba(255, 51, 51, 0.1);
+  padding: 15px;
   border-radius: 5px;
   font-size: 0.9em;
   margin-top: 15px;
   text-align: center;
+  border: 1px solid rgba(255, 51, 51, 0.3);
 }
 
 /* RegisterAPIKey.css */
@@ -459,11 +462,11 @@ select,
 input[type="password"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #444;
+  border: 1px solid var(--background-medium);
   border-radius: 5px;
   font-size: 1em;
-  color: #e0e0e0;
-  background-color: #2b2b2b;
+  color: var(--text-dark);
+  background-color: var(--background-light);
   appearance: none; /* Remove default styling */
 }
 
@@ -471,19 +474,20 @@ input[type="email"]:focus,
 input[type="password"]:focus,
 select:focus {
   outline: none;
-  border-color: #007acc;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 78, 80, 0.1);
 }
 
 label {
   position: absolute;
   top: 50%;
   left: 10px;
-  color: #999;
+  color: var(--text-light);
   font-size: 1em;
   pointer-events: none;
   transform: translateY(-50%);
   transition: 0.2s ease all;
-  background-color: #2b2b2b;
+  background-color: transparent;
   padding: 0 5px;
   border-radius: 3px;
 }
@@ -494,21 +498,24 @@ input[type="password"]:focus ~ label,
 input[type="password"]:not(:placeholder-shown) ~ label,
 select:focus ~ label,
 select:not([value=""]) ~ label {
-  top: 0;
+  top: -10px;
+  left: 10px;
   font-size: 0.8em;
-  color: #777;
+  padding: 0 4px;
+  background-color: var(--background-white);
+  color: var(--primary-color);
 }
 
 select {
-  background-color: #2b2b2b;
-  color: #e0e0e0;
+  background-color: var(--background-light);
+  color: var(--text-dark);
   padding-right: 30px; /* Add space for dropdown arrow */
   text-align-last: left; /* Align text to the left */
 }
 
 select option {
-  background-color: #2b2b2b; /* Background color for options */
-  color: #e0e0e0; /* Text color for options */
+  background-color: var(--background-white); /* Background color for options */
+  color: var(--text-dark); /* Text color for options */
 }
 
 /* Custom dropdown arrow styling */
@@ -519,7 +526,7 @@ select::-ms-expand {
 select::after {
   content: "▼";
   font-size: 0.8em;
-  color: #999;
+  color: var(--text-medium);
   position: absolute;
   right: 10px;
   top: 50%;
@@ -528,6 +535,6 @@ select::after {
 }
 
 .download-button, .copy-button {
-  background-color: #2e2e2e; /* Black background */
-  color: #bbb; 
+  background-color: transparent;
+  color: var(--primary-color);
 }
