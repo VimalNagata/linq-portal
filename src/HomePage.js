@@ -45,7 +45,7 @@ const HomePage = () => {
           <p>Fast, reliable, and secure URL shortening service with comprehensive API access</p>
           <div className="hero-buttons">
             <Link to="/signin" className="primary-button">Get Started</Link>
-            <Link to="/signup" className="secondary-button">View API Docs</Link>
+            <Link to="/api-docs" className="secondary-button">View API Docs</Link>
           </div>
         </div>
       </section>
