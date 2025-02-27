@@ -48,9 +48,9 @@ const AppContent = () => {
         </h2>
         <nav>
           <ul>
-            <li><Link to="/shorten">Shorten a Link</Link></li>
             {currentUser ? (
               <>
+                <li><Link to="/shorten">Shorten a Link</Link></li>
                 <li><Link to="/profile">Profile</Link></li>
                 <li><Link to="/signout">Sign Out</Link></li>
               </>
@@ -65,8 +65,16 @@ const AppContent = () => {
       </aside>
       <main className="main-content">
         <Routes>
-          <Route path="/shorten" element={<ShortenURL />} />
-          <Route path="/register" element={<RegisterAPIKey />} />
+          <Route path="/shorten" element={
+            <ProtectedRoute>
+              <ShortenURL />
+            </ProtectedRoute>
+          } />
+          <Route path="/register" element={
+            <ProtectedRoute>
+              <RegisterAPIKey />
+            </ProtectedRoute>
+          } />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={
@@ -75,7 +83,7 @@ const AppContent = () => {
             </ProtectedRoute>
           } />
           <Route path="/signout" element={<SignOut />} />
-          <Route path="/" element={<ShortenURL />} />
+          <Route path="/" element={<SignIn />} />
         </Routes>
       </main>
     </div>
