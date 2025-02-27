@@ -13,10 +13,14 @@ const ShortenURL = () => {
 
   const MAX_RETRIES = 2;
   const RETRY_DELAY = 3000;
-  const FALLBACK_API_KEY = 'uXQ1FBRW2I9ESih8QzH2m8OFdESF7Jzb22AwTWQW';
+  const FALLBACK_API_KEY = process.env.REACT_APP_FALLBACK_API_KEY || '';
 
   const fetchApiKey = async (email) => {
     try {
+      if (!FALLBACK_API_KEY) {
+        throw new Error('Missing API key configuration');
+      }
+      
       const response = await fetch('https://linq.red/?action=register', {
         method: 'POST',
         headers: {
@@ -26,22 +30,46 @@ const ShortenURL = () => {
         body: JSON.stringify({ email })
       });
 
+      // Check for network errors first
+      if (!response.ok) {
+        const statusCode = response.status;
+        if (statusCode === 403) {
+          throw new Error('Authorization failed. The API key may be invalid or expired.');
+        } else if (statusCode === 429) {
+          throw new Error('Too many requests. Please try again later.');
+        } else if (statusCode >= 500) {
+          throw new Error(`Server error (${statusCode}). Please try again later.`);
+        } else {
+          throw new Error(`Request failed with status: ${statusCode}`);
+        }
+      }
+
       const data = await response.json();
-      if (response.ok && data.api_key) {
+      if (data.api_key) {
         return data.api_key;
       } else {
-        console.error(data.error || 'Error retrieving API key');
-        return null;
+        throw new Error(data.error || 'API key not found in response');
       }
     } catch (err) {
-      console.error('Failed to retrieve API key.');
-      return null;
+      console.error('API Key Error:', err.message);
+      throw err;
     }
   };
 
   const retryShortenURL = async (apiKey, attempt = 1) => {
     const apiKeyToUse = attempt === 2 ? FALLBACK_API_KEY : apiKey;
     try {
+      if (!longURL) {
+        throw new Error('URL is required');
+      }
+      
+      // Validate URL format
+      try {
+        new URL(longURL);
+      } catch (e) {
+        throw new Error('Invalid URL format. Please enter a complete URL including http:// or https://');
+      }
+      
       const response = await fetch('https://linq.red/', {
         method: 'POST',
         headers: {
@@ -51,18 +79,44 @@ const ShortenURL = () => {
         body: JSON.stringify({ long_url: longURL })
       });
 
+      // Check for specific status codes and provide helpful messages
+      if (!response.ok) {
+        const statusCode = response.status;
+        if (statusCode === 400) {
+          throw new Error('Invalid request. Please check the URL format.');
+        } else if (statusCode === 403) {
+          throw new Error('API key unauthorized. Using fallback on next attempt.');
+        } else if (statusCode === 429) {
+          throw new Error('Rate limit exceeded. Please try again later.');
+        } else if (statusCode >= 500) {
+          throw new Error(`Server error (${statusCode}). Please try again later.`);
+        } else {
+          throw new Error(`Request failed with status: ${statusCode}`);
+        }
+      }
+
       const data = await response.json();
-      if (response.ok) {
+      if (data.short_url) {
         setShortURL(data.short_url);
         return true;
       } else {
-        console.error(data.error || 'Error shortening URL');
-        return false;
+        throw new Error(data.error || 'No short URL in response');
       }
     } catch (err) {
-      console.error('Error occurred while shortening the URL.');
+      console.error('URL Shortening Error:', err.message);
+      if (attempt === 1) {
+        // Only log specific error on first attempt for user feedback
+        setError(`Error: ${err.message}`);
+      }
       return false;
     }
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) return 'Email is required';
+    if (!emailRegex.test(email)) return 'Please enter a valid email address';
+    return null;
   };
 
   const handleSubmit = async (e) => {
@@ -71,27 +125,48 @@ const ShortenURL = () => {
     setShortURL(null);
     setLoading(true);
 
-    const apiKey = await fetchApiKey(email);
-    if (!apiKey) {
+    // Input validation
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setError(emailError);
       setLoading(false);
-      setError('Failed to retrieve API key.');
       return;
     }
 
-    let success = false;
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-      success = await retryShortenURL(apiKey, attempt);
-      if (success) break;
+    // Network connectivity check
+    if (!navigator.onLine) {
+      setError('You appear to be offline. Please check your internet connection and try again.');
+      setLoading(false);
+      return;
+    }
 
-      if (attempt < MAX_RETRIES) {
-        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+    try {
+      const apiKey = await fetchApiKey(email);
+      
+      let success = false;
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        if (attempt > 1) {
+          console.log(`Retry attempt ${attempt} of ${MAX_RETRIES}`);
+        }
+        
+        success = await retryShortenURL(apiKey, attempt);
+        if (success) break;
+
+        if (attempt < MAX_RETRIES) {
+          // Show retry message to user
+          setError(`Attempt ${attempt} failed. Retrying in ${RETRY_DELAY/1000} seconds...`);
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+        }
       }
-    }
 
-    if (!success) {
-      setError('Failed to shorten URL after multiple attempts.');
+      if (!success) {
+        setError('Failed to shorten URL after multiple attempts. Please try again later.');
+      }
+    } catch (err) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleCopyURL = () => {
