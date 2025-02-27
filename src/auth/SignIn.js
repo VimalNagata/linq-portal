@@ -57,14 +57,15 @@ const SignIn = () => {
   };
 
   return (
-    <div className="container">
+    <div className="card">
       <h1>Sign In</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="bright-form" onSubmit={handleSubmit}>
         <div className="input-container">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Email</label>
@@ -74,6 +75,7 @@ const SignIn = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Password</label>
@@ -84,10 +86,10 @@ const SignIn = () => {
       </form>
       
       {(error || authError) && (
-        <p className="error-message">{error || authError}</p>
+        <p className="bright-error-message">{error || authError}</p>
       )}
       
-      <div className="auth-links">
+      <div className="bright-auth-links">
         <p>
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>

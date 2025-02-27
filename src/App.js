@@ -1,6 +1,7 @@
 // App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import RegisterAPIKey from './RegisterAPIKey';
 import ShortenURL from './ShortenURL';
 import { AuthProvider, useAuth, PrivateRoute } from './auth/AuthContext';
@@ -40,31 +41,53 @@ const SignOut = () => {
 
 const AppContent = () => {
   const { currentUser } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+  
+  const isActive = (path) => {
+    return location.pathname === path ? 'active' : '';
+  };
   
   return (
-    <div className="ide-layout">
-      <aside className="sidebar">
-        <h2>
-          linq.<span className="red-text">red</span>
-        </h2>
-        <nav>
+    <div className="top-nav-layout">
+      <header className="top-nav">
+        <div className="top-nav-brand">
+          <h2>
+            linq.<span className="red-text">red</span>
+          </h2>
+        </div>
+        
+        <button className="menu-button" onClick={toggleMenu}>
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        
+        <nav className={`nav-links ${menuOpen ? 'show' : ''}`}>
           <ul>
             {currentUser ? (
               <>
-                <li><Link to="/shorten">Shorten a Link</Link></li>
-                <li><Link to="/profile">Profile</Link></li>
-                <li><Link to="/signout">Sign Out</Link></li>
+                <li><Link className={isActive('/shorten')} to="/shorten" onClick={closeMenu}>Shorten URL</Link></li>
+                <li><Link className={isActive('/profile')} to="/profile" onClick={closeMenu}>My Profile</Link></li>
+                <li><Link to="/signout" onClick={closeMenu}>Sign Out</Link></li>
               </>
             ) : (
               <>
-                <li><Link to="/signin">Sign In</Link></li>
-                <li><Link to="/signup">Sign Up</Link></li>
+                <li><Link className={isActive('/signin')} to="/signin" onClick={closeMenu}>Sign In</Link></li>
+                <li><Link className={isActive('/signup')} to="/signup" onClick={closeMenu}>Sign Up</Link></li>
               </>
             )}
           </ul>
         </nav>
-      </aside>
-      <main className="main-content">
+      </header>
+      
+      <main className="page-content">
         <Routes>
           <Route path="/shorten" element={
             <ProtectedRoute>
@@ -88,6 +111,10 @@ const AppContent = () => {
           <Route path="/" element={<SignIn />} />
         </Routes>
       </main>
+      
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} linq.red - All rights reserved.</p>
+      </footer>
     </div>
   );
 };
