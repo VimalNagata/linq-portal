@@ -70,7 +70,7 @@
 }
 
 .red-text {
-  color: #ff4c4c; /* Adjust this hex code to your preferred shade of red */
+  color: var(--primary-color); /* Updated to use the theme variable */
 }
 
 /* General reset */
