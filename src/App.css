@@ -155,16 +155,17 @@ body {
 .container {
   width: 100%;
   padding: 20px;
-  background-color: #2b2b2b;
+  background-color: var(--background-white);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--background-medium);
 }
 
 /* Header Styling */
 h1 {
   font-size: 1.6em;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-dark);
   text-align: center;
   margin-bottom: 20px;
 }
@@ -399,9 +400,9 @@ button:hover {
 
 .success-message {
   margin-top: 20px;
-  background-color: #2e2e2e;
-  border: 1px solid #3c3c3c;
-  color: #005fa3;
+  background-color: rgba(75, 181, 67, 0.1);
+  border: 1px solid rgba(75, 181, 67, 0.3);
+  color: var(--success-color);
   padding: 15px;
   border-radius: 5px;
   font-size: 1em;
