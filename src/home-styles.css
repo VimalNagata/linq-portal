@@ -1,0 +1,293 @@
+/* Homepage styles */
+
+.home-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Hero section */
+.hero {
+  padding: var(--spacing-xl) var(--spacing-lg);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+  background: linear-gradient(90deg, var(--text-dark) 0%, var(--primary-color) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: var(--text-medium);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.hero-buttons .primary-button, 
+.hero-buttons .secondary-button {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 1rem;
+  min-width: 150px;
+}
+
+/* Features section */
+.features-section {
+  padding: var(--spacing-xl) var(--spacing-lg);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.features-section h2 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-dark);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.feature-card {
+  background: var(--background-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--background-medium);
+  transition: transform var(--transition-default), box-shadow var(--transition-default);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-dark);
+}
+
+.feature-card p {
+  color: var(--text-medium);
+  line-height: 1.5;
+}
+
+/* API example section */
+.api-example {
+  padding: var(--spacing-xl) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.api-example h2 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-dark);
+}
+
+.api-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.api-description {
+  padding-right: var(--spacing-lg);
+}
+
+.api-description p {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-medium);
+  line-height: 1.6;
+}
+
+.api-description ul {
+  margin-bottom: var(--spacing-lg);
+  padding-left: var(--spacing-lg);
+}
+
+.api-description li {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-medium);
+}
+
+.api-code {
+  background: var(--background-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 1px solid var(--background-medium);
+}
+
+.code-header {
+  background: var(--background-dark);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-dark);
+  font-weight: 500;
+  border-bottom: 1px solid var(--background-medium);
+}
+
+.api-code pre {
+  margin: 0;
+  padding: var(--spacing-md);
+  overflow-x: auto;
+  background: var(--background-light);
+}
+
+.api-code code {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+/* Pricing section */
+.pricing-section {
+  padding: var(--spacing-xl) var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.pricing-section h2 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-dark);
+}
+
+.pricing-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: var(--background-white);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--background-medium);
+  transition: transform var(--transition-default), box-shadow var(--transition-default);
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.pricing-card.featured {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+  z-index: 1;
+}
+
+.pricing-card.featured:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+
+.pricing-header {
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--background-medium) 0%, var(--background-light) 100%);
+  border-bottom: 1px solid var(--background-medium);
+}
+
+.pricing-card.featured .pricing-header {
+  background: linear-gradient(135deg, rgba(255, 78, 80, 0.1) 0%, rgba(255, 78, 80, 0.05) 100%);
+  border-bottom: 1px solid rgba(255, 78, 80, 0.2);
+}
+
+.pricing-header h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-dark);
+}
+
+.pricing-card.featured .pricing-header h3 {
+  color: var(--primary-color);
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.price span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-medium);
+}
+
+.pricing-card ul {
+  list-style: none;
+  padding: var(--spacing-lg);
+  text-align: left;
+}
+
+.pricing-card li {
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--background-medium);
+  color: var(--text-medium);
+}
+
+.pricing-card li:last-child {
+  border-bottom: none;
+}
+
+.pricing-card .primary-button {
+  margin: 0 var(--spacing-lg) var(--spacing-lg);
+  width: calc(100% - var(--spacing-lg) * 2);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .api-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .api-description {
+    padding-right: 0;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .pricing-card.featured {
+    transform: none;
+  }
+  
+  .pricing-card.featured:hover {
+    transform: translateY(-5px);
+  }
+}

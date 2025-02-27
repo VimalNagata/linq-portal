@@ -211,14 +211,15 @@ const ShortenURL = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Shorten a link</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="card">
+      <h1>Shorten URL</h1>
+      <form className="bright-form" onSubmit={handleSubmit}>
         <div className="input-container">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Email</label>
@@ -228,39 +229,46 @@ const ShortenURL = () => {
             type="url"
             value={longURL}
             onChange={(e) => setLongURL(e.target.value)}
+            placeholder=" "
             required
           />
-          <label>Long URL</label>
+          <label>Enter Long URL</label>
         </div>
         <button type="submit" disabled={loading}>
-          {loading ? 'Processing...' : 'Shorten'}
+          {loading ? 'Processing...' : 'Create Short Link'}
         </button>
       </form>
+      
       {shortURL && (
-         <div >
+        <div>
+          <div className="bright-success-message" ref={qrCodeRef}>
+            <p><strong>QR Code:</strong></p>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '15px 0'}}>
+              <QRCodeSVG value={shortURL} size={150} bgColor="#FFFFFF" fgColor="#FF4E50" />
+            </div>
+            <button className="bright-copy-button" onClick={handleDownloadQRCode} style={{display: 'block', margin: '0 auto'}}>
+              <FaDownload /> Download QR Code
+            </button>
+          </div>
           
-         <div className="success-message" ref={qrCodeRef}>
-         <p>QR Code:</p>
-           <QRCodeSVG value={shortURL} size={128} />
-           &nbsp;
-           <button className="download-button" onClick={handleDownloadQRCode}>
-             <FaDownload />
-           </button>
-         </div>
-         <div className="success-message">
-         <p>Short URL:</p>
-           <a href={shortURL} target="_blank" rel="noopener noreferrer" className="short-url-link">
-             {shortURL}
-           </a> &nbsp;
-           <button className="copy-button" onClick={handleCopyURL}>
-             <FaClipboard />
-           </button>
-         </div>
-        
-       </div>
-        
+          <div className="bright-success-message">
+            <p><strong>Your Short URL:</strong></p>
+            <div className="bright-api-key-container">
+              <a href={shortURL} target="_blank" rel="noopener noreferrer" className="short-url-link">
+                {shortURL}
+              </a>
+              <button className="bright-copy-button" onClick={handleCopyURL}>
+                <FaClipboard />
+              </button>
+            </div>
+            <p style={{textAlign: 'center', marginTop: '10px', fontSize: '0.9rem'}}>
+              Share this link or scan the QR code to access your original URL
+            </p>
+          </div>
+        </div>
       )}
-      {error && <p className="error-message">{error}</p>}
+      
+      {error && <p className="bright-error-message">{error}</p>}
     </div>
   );
 };

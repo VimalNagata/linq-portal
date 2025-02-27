@@ -62,13 +62,13 @@ const ForgotPassword = () => {
 
   if (success) {
     return (
-      <div className="container">
+      <div className="card">
         <h1>Password Reset</h1>
-        <div className="success-message">
+        <div className="bright-success-message">
           <p>If your email exists in our system, you will receive your password shortly.</p>
           <p>Please check your email inbox and follow the instructions.</p>
         </div>
-        <div className="auth-links">
+        <div className="bright-auth-links">
           <p>
             Ready to sign in? <Link to="/signin">Go to Sign In</Link>
           </p>
@@ -78,14 +78,15 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="container">
+    <div className="card">
       <h1>Forgot Password</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="bright-form" onSubmit={handleSubmit}>
         <div className="input-container">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Email</label>
@@ -95,9 +96,9 @@ const ForgotPassword = () => {
         </button>
       </form>
       
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="bright-error-message">{error}</p>}
       
-      <div className="auth-links">
+      <div className="bright-auth-links">
         <p>
           Remembered your password? <Link to="/signin">Sign In</Link>
         </p>

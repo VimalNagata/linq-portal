@@ -70,14 +70,15 @@ const SignUp = () => {
   };
 
   return (
-    <div className="container">
+    <div className="card">
       <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="bright-form" onSubmit={handleSubmit}>
         <div className="input-container">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Email</label>
@@ -87,6 +88,7 @@ const SignUp = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Password</label>
@@ -96,6 +98,7 @@ const SignUp = () => {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder=" "
             required
           />
           <label>Confirm Password</label>
@@ -105,9 +108,9 @@ const SignUp = () => {
         </button>
       </form>
       
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="bright-error-message">{error}</p>}
       
-      <div className="auth-links">
+      <div className="bright-auth-links">
         <p>
           Already have an account? <Link to="/signin">Sign In</Link>
         </p>
