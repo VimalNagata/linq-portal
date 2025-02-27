@@ -16,25 +16,32 @@ const ShortenURL = () => {
   const FALLBACK_API_KEY = process.env.REACT_APP_FALLBACK_API_KEY || '';
 
   const fetchApiKey = async (email) => {
+    // First try to get the API key from localStorage (set during login)
+    const storedApiKey = localStorage.getItem('apiKey');
+    if (storedApiKey) {
+      return storedApiKey;
+    }
+    
+    // Fall back to requesting a new API key if not logged in
     try {
       if (!FALLBACK_API_KEY) {
         throw new Error('Missing API key configuration');
       }
       
-      const response = await fetch('https://linq.red/?action=register', {
+      const response = await fetch('https://linq.red/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': FALLBACK_API_KEY
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, password: 'temporary' })
       });
 
       // Check for network errors first
       if (!response.ok) {
         const statusCode = response.status;
         if (statusCode === 403) {
-          throw new Error('Authorization failed. The API key may be invalid or expired.');
+          throw new Error('Authorization failed. Please sign in to use this feature.');
         } else if (statusCode === 429) {
           throw new Error('Too many requests. Please try again later.');
         } else if (statusCode >= 500) {
@@ -58,6 +65,8 @@ const ShortenURL = () => {
 
   const retryShortenURL = async (apiKey, attempt = 1) => {
     const apiKeyToUse = attempt === 2 ? FALLBACK_API_KEY : apiKey;
+    const token = localStorage.getItem('authToken');
+    
     try {
       if (!longURL) {
         throw new Error('URL is required');
@@ -70,12 +79,19 @@ const ShortenURL = () => {
         throw new Error('Invalid URL format. Please enter a complete URL including http:// or https://');
       }
       
-      const response = await fetch('https://linq.red/', {
+      const headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKeyToUse
+      };
+      
+      // Add authorization token if available
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      const response = await fetch('https://linq.red/urls', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKeyToUse
-        },
+        headers: headers,
         body: JSON.stringify({ long_url: longURL })
       });
 

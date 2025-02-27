@@ -407,13 +407,30 @@ button:hover {
 
 .error-message {
   margin-top: 20px;
-  color: #e60000;
-  background-color: #fbe3e3;
-  border: 1px solid #f5c2c2;
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
   padding: 15px;
   border-radius: 5px;
   font-size: 1em;
   text-align: center;
+}
+
+/* Auth links styling */
+.auth-links {
+  margin-top: 20px;
+  text-align: center;
+  color: #888;
+}
+
+.auth-links a {
+  color: #007acc;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
 }
 
 .copy-button {
@@ -438,7 +455,8 @@ button:hover {
 }
 
 input,
-select {
+select,
+input[type="password"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #444;
@@ -450,6 +468,7 @@ select {
 }
 
 input[type="email"]:focus,
+input[type="password"]:focus,
 select:focus {
   outline: none;
   border-color: #007acc;
@@ -471,6 +490,8 @@ label {
 
 input:focus ~ label,
 input:not(:placeholder-shown) ~ label,
+input[type="password"]:focus ~ label,
+input[type="password"]:not(:placeholder-shown) ~ label,
 select:focus ~ label,
 select:not([value=""]) ~ label {
   top: 0;
