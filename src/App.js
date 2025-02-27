@@ -1,7 +1,7 @@
 // App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
 import RegisterAPIKey from './RegisterAPIKey';
 import ShortenURL from './ShortenURL';
 import { AuthProvider, useAuth, PrivateRoute } from './auth/AuthContext';
@@ -9,6 +9,7 @@ import SignIn from './auth/SignIn';
 import SignUp from './auth/SignUp';
 import Profile from './auth/Profile';
 import ForgotPassword from './auth/ForgotPassword';
+import HomePage from './HomePage';
 import './App.css';
 
 // Create a protected route component
@@ -60,9 +61,11 @@ const AppContent = () => {
     <div className="top-nav-layout">
       <header className="top-nav">
         <div className="top-nav-brand">
-          <h2>
-            linq.<span className="red-text">red</span>
-          </h2>
+          <Link to="/">
+            <h2>
+              linq.<span className="red-text">red</span>
+            </h2>
+          </Link>
         </div>
         
         <button className="menu-button" onClick={toggleMenu}>
@@ -73,14 +76,34 @@ const AppContent = () => {
           <ul>
             {currentUser ? (
               <>
-                <li><Link className={isActive('/shorten')} to="/shorten" onClick={closeMenu}>Shorten URL</Link></li>
-                <li><Link className={isActive('/profile')} to="/profile" onClick={closeMenu}>My Account</Link></li>
-                <li><Link to="/signout" onClick={closeMenu}>Sign Out</Link></li>
+                <li>
+                  <Link className={isActive('/shorten')} to="/shorten" onClick={closeMenu}>
+                    <FaLink className="nav-icon" /> Shorten URL
+                  </Link>
+                </li>
+                <li>
+                  <Link className={isActive('/profile')} to="/profile" onClick={closeMenu}>
+                    <FaUser className="nav-icon" /> My Account
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/signout" onClick={closeMenu}>
+                    <FaSignOutAlt className="nav-icon" /> Sign Out
+                  </Link>
+                </li>
               </>
             ) : (
               <>
-                <li><Link className={isActive('/signin')} to="/signin" onClick={closeMenu}>Sign In</Link></li>
-                <li><Link className={isActive('/signup')} to="/signup" onClick={closeMenu}>Sign Up</Link></li>
+                <li>
+                  <Link className={isActive('/signin')} to="/signin" onClick={closeMenu}>
+                    <FaSignInAlt className="nav-icon" /> Sign In
+                  </Link>
+                </li>
+                <li>
+                  <Link className={isActive('/signup')} to="/signup" onClick={closeMenu}>
+                    <FaUserPlus className="nav-icon" /> Sign Up
+                  </Link>
+                </li>
               </>
             )}
           </ul>
@@ -108,7 +131,7 @@ const AppContent = () => {
             </ProtectedRoute>
           } />
           <Route path="/signout" element={<SignOut />} />
-          <Route path="/" element={<SignIn />} />
+          <Route path="/" element={<HomePage />} />
         </Routes>
       </main>
       

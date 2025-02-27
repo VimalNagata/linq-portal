@@ -59,6 +59,14 @@
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-md);
   transition: all var(--transition-quick);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+  color: var(--primary-color);
 }
 
 .nav-links a:hover {
