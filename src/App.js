@@ -7,6 +7,7 @@ import { AuthProvider, useAuth, PrivateRoute } from './auth/AuthContext';
 import SignIn from './auth/SignIn';
 import SignUp from './auth/SignUp';
 import Profile from './auth/Profile';
+import ForgotPassword from './auth/ForgotPassword';
 import './App.css';
 
 // Create a protected route component
@@ -77,6 +78,7 @@ const AppContent = () => {
           } />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
