@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import './theme.css';
 import './bright-layout.css';
-import './home-styles.css';
+// Don't import home-styles.css globally - it's imported in the HomePage component
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
