@@ -5,8 +5,8 @@ import { FaLink, FaCode, FaChartLine, FaServer, FaShieldAlt, FaQrcode } from 're
 import './App.css';
 import './home-styles.css';
 
-// Force style reloading by adding a class to body element on component mount
-const styleVersion = Date.now(); // Unique timestamp to force style refresh
+// Use a fixed version number - only change when updating the component
+const HOME_STYLE_VERSION = '2025-02-28-v1';
 
 const FeatureCard = ({ icon, title, description }) => (
   <div className="feature-card">
@@ -41,14 +41,34 @@ const HomePage = () => {
   "creation_date": "2023-04-12T14:23:45.123Z"
 }`;
 
-  // Add a useEffect to force style reapplication
+  // Add a useEffect to force style reapplication and modify document title
   useEffect(() => {
-    // Force a browser repaint
-    document.body.classList.add(`home-version-${styleVersion}`);
+    // Apply a consistent class to handle the homepage styling
+    document.body.classList.add(`home-version-${HOME_STYLE_VERSION}`);
+    
+    // Add meta tag to prevent caching for this page
+    const metaCache = document.createElement('meta');
+    metaCache.httpEquiv = 'Cache-Control';
+    metaCache.content = 'no-cache, no-store, must-revalidate';
+    document.head.appendChild(metaCache);
+    
+    // Also add Pragma and Expires for older browsers
+    const metaPragma = document.createElement('meta');
+    metaPragma.httpEquiv = 'Pragma';
+    metaPragma.content = 'no-cache';
+    document.head.appendChild(metaPragma);
+    
+    const metaExpires = document.createElement('meta');
+    metaExpires.httpEquiv = 'Expires';
+    metaExpires.content = '0';
+    document.head.appendChild(metaExpires);
     
     // Clean up on unmount
     return () => {
-      document.body.classList.remove(`home-version-${styleVersion}`);
+      document.body.classList.remove(`home-version-${HOME_STYLE_VERSION}`);
+      if (metaCache.parentNode) document.head.removeChild(metaCache);
+      if (metaPragma.parentNode) document.head.removeChild(metaPragma);
+      if (metaExpires.parentNode) document.head.removeChild(metaExpires);
     };
   }, []);
 

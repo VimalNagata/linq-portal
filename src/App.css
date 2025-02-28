@@ -9,63 +9,66 @@
   /* Main layout styling */
   .ide-layout {
     flex-direction: column;
-}
+  }
 
-.sidebar {
+  .sidebar {
     width: 100%;
     padding: 10px;
     box-shadow: none;
-}
+  }
 
   /* Main content adjustments */
   .main-content {
-      padding: 15px;
-      width: 100%;
-      box-shadow: none;
+    padding: 15px;
+    width: 100%;
+    box-shadow: none;
   }
 
   .container {
-      width: 100%;
-      padding: 15px;
-      box-shadow: none;
+    width: 100%;
+    padding: 15px;
+    box-shadow: none;
   }
 
   /* Header */
   h1 {
-      font-size: 1.4em;
+    font-size: 1.4em;
   }
 
   /* Form adjustments */
   form {
-      gap: 10px;
-      padding: 15px;
+    gap: 10px;
+    padding: 15px;
   }
 
   input[type="email"],
   input[type="url"],
   input[type="text"],
   select {
-      font-size: 1em;
-      padding: 8px;
+    font-size: 1em;
+    padding: 8px;
   }
 
   button {
-      font-size: 1em;
-      padding: 10px;
+    font-size: 1em;
+    padding: 10px;
   }
 
   /* Message and code block adjustments */
-  .success-message, .error-message, .code-block {
-      font-size: 0.9em;
-      padding: 10px;
-      border-radius: 5px;
+  .success-message,
+  .error-message,
+  .code-block {
+    font-size: 0.9em;
+    padding: 10px;
+    border-radius: 5px;
   }
 
   /* Download and Copy buttons */
-  .download-button, .copy-button {
-      width: 35px;
-      height: 35px;
-      font-size: 1em;
+  .download-button,
+  .copy-button {
+    width: 35px;
+    height: 35px;
+    font-size: 1em;
   }
 }
 
@@ -81,9 +84,8 @@
 }
 
 body {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
   background-color: #1e1e1e;
-  color: #e0e0e0;
   margin: 0;
   padding: 0;
 
@@ -192,7 +194,7 @@ input[type="text"] {
   width: 100%;
   color: var(--text-dark);
   background-color: var(--background-light);
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
 }
 
 button {
@@ -242,8 +244,6 @@ button:hover {
   color: #3399ff;
 }
 
-
-
 .success-message p,
 .success-message h3 {
   font-size: 1em;
@@ -257,7 +257,7 @@ button:hover {
   padding: 10px;
   border-radius: 5px;
   color: var(--text-dark);
-  font-family: 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-family: "Source Code Pro", "Menlo", "Consolas", "Courier New", monospace;
   font-size: 0.9em;
   word-break: break-all;
   border: 1px solid var(--background-medium);
@@ -275,7 +275,7 @@ button:hover {
   overflow-x: auto;
   margin-top: 10px;
   box-shadow: var(--shadow-sm);
-  font-family: 'Source Code Pro', 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-family: "Source Code Pro", "Menlo", "Consolas", "Courier New", monospace;
   border: 1px solid var(--background-medium);
 }
 
@@ -535,7 +535,8 @@ select::after {
   pointer-events: none;
 }
 
-.download-button, .copy-button {
+.download-button,
+.copy-button {
   background-color: transparent;
   color: var(--primary-color);
 }

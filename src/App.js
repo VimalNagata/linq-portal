@@ -1,6 +1,6 @@
 // App.js
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { FaBars, FaTimes, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaChartBar } from 'react-icons/fa';
 import RegisterAPIKey from './RegisterAPIKey';
 import ShortenURL from './ShortenURL';
@@ -14,6 +14,7 @@ import APIDocumentation from './APIDocumentation';
 import Analytics from './analytics/Analytics';
 import './App.css';
 import './api-docs.css';
+import './iframe-mode.css';
 
 // Create a protected route component
 const ProtectedRoute = ({ children }) => {
@@ -156,12 +157,37 @@ const AppContent = () => {
   );
 };
 
-const App = () => (
-  <AuthProvider>
-    <Router>
-      <AppContent />
-    </Router>
-  </AuthProvider>
-);
+const App = () => {
+  // Check if app is loaded in iframe
+  const isInIframe = window.self !== window.top;
+  
+  // Force to homepage if loaded in iframe with no specific route
+  React.useEffect(() => {
+    if (isInIframe) {
+      // Get current path from the iframe
+      const currentPath = window.location.pathname;
+      
+      // If we're at the root and in an iframe, explicitly set hash to ensure
+      // homepage loads within the iframe context
+      if (currentPath === '/' || currentPath === '') {
+        console.log('App loaded in iframe - ensuring homepage is displayed');
+        // We use a small timeout to ensure React has initialized
+        setTimeout(() => {
+          window.location.hash = '#/';
+          // Force a re-render by adding a class to body
+          document.body.classList.add('iframe-homepage-view');
+        }, 100);
+      }
+    }
+  }, [isInIframe]);
+
+  return (
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
+  );
+};
 
 export default App;

@@ -1,0 +1,41 @@
+/* iframe-mode.css - Styles for when the app is loaded in an iframe */
+
+.iframe-homepage-view {
+  /* Add any specific styles needed for iframe display here */
+  overflow-x: hidden;
+}
+
+/* Ensure content is properly visible in iframe context */
+.iframe-homepage-view .home-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Adjustments for iframe height constraints */
+.iframe-homepage-view .hero {
+  padding-top: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+}
+
+/* Make text a bit smaller to fit better in iframe */
+.iframe-homepage-view .hero h1 {
+  font-size: 2.2rem;
+}
+
+.iframe-homepage-view .hero p {
+  font-size: 1.1rem;
+}
+
+/* Adjust grid layouts for iframe width */
+@media (max-width: 1100px) {
+  .iframe-homepage-view .analytics-layout,
+  .iframe-homepage-view .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .iframe-homepage-view .api-content {
+    grid-template-columns: 1fr;
+  }
+}
