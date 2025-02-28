@@ -1,7 +1,7 @@
 // App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaTimes, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaChartBar } from 'react-icons/fa';
 import RegisterAPIKey from './RegisterAPIKey';
 import ShortenURL from './ShortenURL';
 import { AuthProvider, useAuth, PrivateRoute } from './auth/AuthContext';
@@ -11,6 +11,7 @@ import Profile from './auth/Profile';
 import ForgotPassword from './auth/ForgotPassword';
 import HomePage from './HomePage';
 import APIDocumentation from './APIDocumentation';
+import Analytics from './analytics/Analytics';
 import './App.css';
 import './api-docs.css';
 
@@ -84,6 +85,11 @@ const AppContent = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link className={isActive('/analytics')} to="/analytics" onClick={closeMenu}>
+                    <FaChartBar className="nav-icon" /> Analytics
+                  </Link>
+                </li>
+                <li>
                   <Link className={isActive('/profile')} to="/profile" onClick={closeMenu}>
                     <FaUser className="nav-icon" /> My Account
                   </Link>
@@ -122,6 +128,11 @@ const AppContent = () => {
           <Route path="/register" element={
             <ProtectedRoute>
               <RegisterAPIKey />
+            </ProtectedRoute>
+          } />
+          <Route path="/analytics" element={
+            <ProtectedRoute>
+              <Analytics />
             </ProtectedRoute>
           } />
           <Route path="/signin" element={<SignIn />} />

@@ -1,8 +1,12 @@
 // HomePage.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaLink, FaCode, FaChartLine, FaServer, FaShieldAlt, FaQrcode } from 'react-icons/fa';
 import './App.css';
+import './home-styles.css';
+
+// Force style reloading by adding a class to body element on component mount
+const styleVersion = Date.now(); // Unique timestamp to force style refresh
 
 const FeatureCard = ({ icon, title, description }) => (
   <div className="feature-card">
@@ -36,6 +40,17 @@ const HomePage = () => {
   "long_url": "https://example.com/very/long/path/to/document.html",
   "creation_date": "2023-04-12T14:23:45.123Z"
 }`;
+
+  // Add a useEffect to force style reapplication
+  useEffect(() => {
+    // Force a browser repaint
+    document.body.classList.add(`home-version-${styleVersion}`);
+    
+    // Clean up on unmount
+    return () => {
+      document.body.classList.remove(`home-version-${styleVersion}`);
+    };
+  }, []);
 
   return (
     <div className="home-container">
