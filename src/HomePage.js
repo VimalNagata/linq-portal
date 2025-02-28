@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaLink, FaCode, FaChartLine, FaServer, FaShieldAlt, FaQrcode } from 'react-icons/fa';
 import './App.css';
+import './home-styles.css';
 
 const FeatureCard = ({ icon, title, description }) => (
   <div className="feature-card">
