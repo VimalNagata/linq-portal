@@ -54,21 +54,48 @@ const URLAnalytics = ({ url }) => {
       setLoading(true);
       setError(null);
       
+      // Add debugging
+      console.log('URLAnalytics: Fetching analytics for', url.short_code);
+      
+      // Check if token exists
+      if (!token) {
+        setError('Authentication token missing. Please sign in again.');
+        setLoading(false);
+        return;
+      }
+      
       try {
+        // Set timeout to prevent hanging requests
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
         const response = await fetch(`https://linq.red/urls/analytics?short_code=${url.short_code}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal
         });
-
+        
+        clearTimeout(timeoutId); // Clear timeout if request completes
+        
+        console.log('URLAnalytics: API response status:', response.status);
+        
         if (!response.ok) {
           throw new Error(`Error fetching analytics: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('URLAnalytics: Data received:', data);
+        
         setAnalytics(data.analytics);
       } catch (err) {
-        setError(`Failed to load analytics: ${err.message}`);
+        // Handle abort error specially
+        if (err.name === 'AbortError') {
+          setError('Request timed out. The server might be experiencing issues.');
+        } else {
+          setError(`Failed to load analytics: ${err.message}`);
+        }
         console.error('Analytics error:', err);
       } finally {
         setLoading(false);
@@ -293,25 +320,59 @@ const Analytics = () => {
   const [selectedUrl, setSelectedUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
   const { token } = useAuth();
+  
+  // Set a timeout to show fallback message if loading takes too long
+  useEffect(() => {
+    if (loading) {
+      const timeoutId = setTimeout(() => {
+        setLoadingTimeout(true);
+      }, 8000); // 8 seconds
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [loading]);
 
   useEffect(() => {
     const fetchUrls = async () => {
       setLoading(true);
       setError(null);
       
+      // Add debugging to see what's happening
+      console.log('Analytics: Fetching URLs with token', token ? `${token.substring(0, 10)}...` : 'missing');
+      
+      // Check if token exists
+      if (!token) {
+        setError('Authentication token missing. Please sign in again.');
+        setLoading(false);
+        return;
+      }
+      
       try {
+        // Set timeout to prevent hanging requests
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
         const response = await fetch('https://linq.red/urls', {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          signal: controller.signal
         });
-
+        
+        clearTimeout(timeoutId); // Clear timeout if request completes
+        
+        console.log('Analytics: API response status:', response.status);
+        
         if (!response.ok) {
           throw new Error(`Error fetching URLs: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Analytics: Data received:', data);
+        
         setUrls(data.urls || []);
         
         // Automatically select the first URL if available
@@ -319,16 +380,19 @@ const Analytics = () => {
           setSelectedUrl(data.urls[0]);
         }
       } catch (err) {
-        setError(`Failed to load URLs: ${err.message}`);
+        // Handle abort error specially
+        if (err.name === 'AbortError') {
+          setError('Request timed out. The server might be experiencing issues.');
+        } else {
+          setError(`Failed to load URLs: ${err.message}`);
+        }
         console.error('Error fetching URLs:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (token) {
-      fetchUrls();
-    }
+    fetchUrls();
   }, [token]);
 
   const handleSelectUrl = (url) => {
@@ -338,7 +402,28 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="analytics-container">
-        <div className="loading-message">Loading your analytics data...</div>
+        <div className="analytics-header-main">
+          <h1>URL Analytics</h1>
+          <p>Track and analyze the performance of your shortened URLs.</p>
+        </div>
+        <div className="loading-message">
+          <p>Loading your analytics data...</p>
+          {loadingTimeout ? (
+            <div className="loading-sub-message">
+              <p>It's taking longer than expected to load your data.</p>
+              <p>This could be due to backend issues or a slow connection.</p>
+              <button 
+                className="primary-button" 
+                style={{marginTop: '20px'}}
+                onClick={() => window.location.reload()}
+              >
+                Refresh Page
+              </button>
+            </div>
+          ) : (
+            <p className="loading-sub-message">This may take a few moments.</p>
+          )}
+        </div>
       </div>
     );
   }

@@ -10,6 +10,11 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Clean up any mock data that might have been left over
+  useEffect(() => {
+    localStorage.removeItem('mockEmail');
+  }, []);
 
   // Check for existing token on initial load
   useEffect(() => {
@@ -115,13 +120,17 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
+  // Get token from localStorage
+  const token = localStorage.getItem('authToken');
+  
   const value = {
     currentUser,
     loading,
     error,
     signIn,
     signUp,
-    signOut
+    signOut,
+    token // Explicitly expose the token
   };
 
   return (

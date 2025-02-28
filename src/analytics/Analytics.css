@@ -398,6 +398,19 @@
 
 .loading-message {
   color: var(--text-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: var(--spacing-xl);
+}
+
+.loading-sub-message {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: var(--spacing-md);
+  max-width: 400px;
 }
 
 .error-message {
