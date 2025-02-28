@@ -158,7 +158,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="card">
+    <div className="profile-container">
       {notification && (
         <div className={`notification ${notification.type === 'success' ? 'notification-success' : 'notification-error'}`}>
           {notification.message}
@@ -166,59 +166,181 @@ const Profile = () => {
       )}
       <h1>My Account</h1>
       
-      <div className="profile-section">
-        <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginBottom: '15px'}}>Account Information</h2>
-        <div className="profile-info">
-          <div className="info-row">
-            <span className="info-label">Email:</span>
-            <span className="info-value">{currentUser.email}</span>
-          </div>
-          <div className="info-row">
-            <span className="info-label">Created:</span>
-            <span className="info-value">{new Date(currentUser.created_at).toLocaleDateString()}</span>
-          </div>
-        </div>
-        
-        {apiKey && (
-          <div style={{marginTop: '30px'}}>
-            <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginBottom: '15px'}}>Your API Key</h2>
-            <div className="bright-api-key-container">
-              <code style={{color: 'var(--primary-color)', fontWeight: '500'}}>{apiKey}</code>
-              <button className="bright-copy-button" onClick={handleCopyAPIKey}>
-                <FaClipboard />
-              </button>
-            </div>
-            
-            <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', marginTop: '30px', marginBottom: '15px'}}>Developer Resources</h2>
-            <p style={{color: 'var(--text-dark)', marginBottom: '15px'}}>Use these code snippets to integrate with our API:</p>
-            
-            <div style={{marginTop: '15px'}}>
-              <p><strong>cURL</strong></p>
-              <div style={{position: 'relative'}}>
-                <SyntaxHighlighter language="bash" style={vs}>
-                  {`curl -X POST 'https://linq.red/urls' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: ${apiKey}' \\
-  -d '{"long_url": "https://example.com/your-long-url"}'`}
-                </SyntaxHighlighter>
+      <div className="profile-layout">
+        {/* Main Content - URLs Section */}
+        <div className="profile-main">
+          <div className="profile-section urls-section">
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
+              <h2 className="section-title">My Shortened URLs</h2>
+              <div className="section-actions">
+                <button className="primary-button create-url-button" onClick={() => navigate('/shorten')}>
+                  Create New URL
+                </button>
                 <button 
-                  className="copy-button" 
-                  onClick={() => handleCopyCode(`curl -X POST 'https://linq.red/urls' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: ${apiKey}' \\
-  -d '{"long_url": "https://example.com/your-long-url"}'`)}
-                  style={{position: 'absolute', top: '10px', right: '10px'}}
+                  className="refresh-button" 
+                  onClick={fetchUserUrls} 
+                  disabled={urlsLoading}
+                  title="Refresh URLs"
                 >
-                  <FaClipboard />
+                  <FaRedo />
                 </button>
               </div>
             </div>
             
-            <div style={{marginTop: '15px'}}>
-              <p><strong>JavaScript (fetch)</strong></p>
-              <div style={{position: 'relative'}}>
-                <SyntaxHighlighter language="javascript" style={vs}>
-                  {`const response = await fetch('https://linq.red/urls', {
+            {urlsLoading ? (
+              <div className="loading-container">
+                <p>Loading your URLs...</p>
+              </div>
+            ) : urlsError ? (
+              <div className="bright-error-message">
+                <p>{urlsError}</p>
+                <button 
+                  className="secondary-button" 
+                  onClick={fetchUserUrls} 
+                  style={{marginTop: '10px', width: 'auto'}}
+                >
+                  Try Again
+                </button>
+              </div>
+            ) : urls.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-state-icon">
+                  <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 7H18C19.1046 7 20 7.89543 20 9V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V9C4 7.89543 4.89543 7 6 7H9" stroke="var(--text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 3V15M12 15L9 12M12 15L15 12" stroke="var(--primary-color)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <p>You haven't created any shortened URLs yet.</p>
+                <button 
+                  className="primary-button" 
+                  onClick={() => navigate('/shorten')} 
+                  style={{marginTop: '20px'}}
+                >
+                  Create Your First Short URL
+                </button>
+              </div>
+            ) : (
+              <div className="url-cards">
+                {urls.map(url => (
+                  <div className="url-card profile-url-card" key={url.short_code}>
+                    <div className="url-card-icon">
+                      <FaLink />
+                    </div>
+                    <div className="url-card-details">
+                      <div className="url-card-header">
+                        <h3>{url.short_code}</h3>
+                        <div className="url-actions">
+                          <button 
+                            className="url-action-button" 
+                            onClick={() => handleCopyShortUrl(url.short_url)}
+                            title="Copy URL"
+                          >
+                            <FaCopy />
+                          </button>
+                          <a 
+                            href={url.short_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="url-action-button"
+                            title="Open URL"
+                          >
+                            <FaExternalLinkAlt />
+                          </a>
+                          <button 
+                            className="url-action-button url-delete-button" 
+                            onClick={() => handleDeleteUrl(url.short_code)}
+                            title="Delete URL"
+                            disabled={deletingUrlIds.includes(url.short_code)}
+                          >
+                            {deletingUrlIds.includes(url.short_code) ? '...' : <FaTrash />}
+                          </button>
+                        </div>
+                      </div>
+                      <p className="long-url">{url.long_url}</p>
+                      <div className="url-card-meta">
+                        <span className="url-card-clicks">
+                          <FaChartBar /> {url.total_clicks || 0} clicks
+                        </span>
+                        <span className="url-card-date">
+                          Created: {new Date(url.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Sidebar - Account Info & API */}
+        <div className="profile-sidebar">
+          <div className="profile-section account-section">
+            <h2 className="section-title">Account Information</h2>
+            <div className="profile-info">
+              <div className="info-row">
+                <span className="info-label">Email:</span>
+                <span className="info-value">{currentUser.email}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Created:</span>
+                <span className="info-value">{new Date(currentUser.created_at).toLocaleDateString()}</span>
+              </div>
+            </div>
+            
+            <div className="account-actions">
+              <button 
+                className="secondary-button"
+                onClick={handleSignOut}
+                disabled={loading}
+              >
+                {loading ? 'Processing...' : 'Sign Out'}
+              </button>
+            </div>
+          </div>
+          
+          {apiKey && (
+            <div className="profile-section api-section">
+              <h2 className="section-title">Your API Key</h2>
+              <div className="bright-api-key-container">
+                <code style={{color: 'var(--primary-color)', fontWeight: '500'}}>{apiKey}</code>
+                <button className="bright-copy-button" onClick={handleCopyAPIKey}>
+                  <FaClipboard />
+                </button>
+              </div>
+              
+              <div className="collapsible-section">
+                <details>
+                  <summary className="section-title">Developer Resources</summary>
+                  <p className="dev-resources-description">Use these code snippets to integrate with our API:</p>
+                  
+                  <div className="code-example">
+                    <p><strong>cURL</strong></p>
+                    <div style={{position: 'relative'}}>
+                      <SyntaxHighlighter language="bash" style={vs}>
+                        {`curl -X POST 'https://linq.red/urls' \\
+  -H 'Content-Type: application/json' \\
+  -H 'x-api-key: ${apiKey}' \\
+  -d '{"long_url": "https://example.com/your-long-url"}'`}
+                      </SyntaxHighlighter>
+                      <button 
+                        className="copy-button" 
+                        onClick={() => handleCopyCode(`curl -X POST 'https://linq.red/urls' \\
+  -H 'Content-Type: application/json' \\
+  -H 'x-api-key: ${apiKey}' \\
+  -d '{"long_url": "https://example.com/your-long-url"}'`)}
+                        style={{position: 'absolute', top: '10px', right: '10px'}}
+                      >
+                        <FaClipboard />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="code-example">
+                    <p><strong>JavaScript (fetch)</strong></p>
+                    <div style={{position: 'relative'}}>
+                      <SyntaxHighlighter language="javascript" style={vs}>
+                        {`const response = await fetch('https://linq.red/urls', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -231,10 +353,10 @@ const Profile = () => {
 
 const data = await response.json();
 const shortUrl = data.short_url;`}
-                </SyntaxHighlighter>
-                <button 
-                  className="copy-button" 
-                  onClick={() => handleCopyCode(`const response = await fetch('https://linq.red/urls', {
+                      </SyntaxHighlighter>
+                      <button 
+                        className="copy-button" 
+                        onClick={() => handleCopyCode(`const response = await fetch('https://linq.red/urls', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -247,18 +369,18 @@ const shortUrl = data.short_url;`}
 
 const data = await response.json();
 const shortUrl = data.short_url;`)}
-                  style={{position: 'absolute', top: '10px', right: '10px'}}
-                >
-                  <FaClipboard />
-                </button>
-              </div>
-            </div>
-            
-            <div style={{marginTop: '15px'}}>
-              <p><strong>Python (requests)</strong></p>
-              <div style={{position: 'relative'}}>
-                <SyntaxHighlighter language="python" style={vs}>
-                  {`import requests
+                        style={{position: 'absolute', top: '10px', right: '10px'}}
+                      >
+                        <FaClipboard />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="code-example">
+                    <p><strong>Python (requests)</strong></p>
+                    <div style={{position: 'relative'}}>
+                      <SyntaxHighlighter language="python" style={vs}>
+                        {`import requests
 import json
 
 url = "https://linq.red/urls"
@@ -273,10 +395,10 @@ payload = {
 response = requests.post(url, headers=headers, data=json.dumps(payload))
 data = response.json()
 short_url = data["short_url"]`}
-                </SyntaxHighlighter>
-                <button 
-                  className="copy-button" 
-                  onClick={() => handleCopyCode(`import requests
+                      </SyntaxHighlighter>
+                      <button 
+                        className="copy-button" 
+                        onClick={() => handleCopyCode(`import requests
 import json
 
 url = "https://linq.red/urls"
@@ -291,132 +413,17 @@ payload = {
 response = requests.post(url, headers=headers, data=json.dumps(payload))
 data = response.json()
 short_url = data["short_url"]`)}
-                  style={{position: 'absolute', top: '10px', right: '10px'}}
-                >
-                  <FaClipboard />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* URLs Section */}
-      <div className="profile-section" style={{marginTop: '30px'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
-          <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', margin: 0}}>
-            My Shortened URLs
-          </h2>
-          <button 
-            className="refresh-button" 
-            onClick={fetchUserUrls} 
-            disabled={urlsLoading}
-            title="Refresh URLs"
-          >
-            <FaRedo />
-          </button>
-        </div>
-        
-        {urlsLoading ? (
-          <div style={{textAlign: 'center', padding: '20px', color: 'var(--text-medium)', background: 'var(--background-light)', borderRadius: 'var(--border-radius-md)'}}>
-            <p>Loading your URLs...</p>
-          </div>
-        ) : urlsError ? (
-          <div className="bright-error-message">
-            <p>{urlsError}</p>
-            <button 
-              className="secondary-button" 
-              onClick={fetchUserUrls} 
-              style={{marginTop: '10px', width: 'auto'}}
-            >
-              Try Again
-            </button>
-          </div>
-        ) : urls.length === 0 ? (
-          <div style={{textAlign: 'center', padding: '30px 20px', color: 'var(--text-medium)', background: 'var(--background-light)', borderRadius: 'var(--border-radius-md)'}}>
-            <div className="empty-state-icon">
-              <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 7H18C19.1046 7 20 7.89543 20 9V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V9C4 7.89543 4.89543 7 6 7H9" stroke="var(--text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 3V15M12 15L9 12M12 15L15 12" stroke="var(--primary-color)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <p>You haven't created any shortened URLs yet.</p>
-            <button 
-              className="primary-button" 
-              onClick={() => navigate('/shorten')} 
-              style={{marginTop: '20px'}}
-            >
-              Create Your First Short URL
-            </button>
-          </div>
-        ) : (
-          <div className="url-cards">
-            {urls.map(url => (
-              <div className="url-card profile-url-card" key={url.short_code}>
-                <div className="url-card-icon">
-                  <FaLink />
-                </div>
-                <div className="url-card-details">
-                  <div className="url-card-header">
-                    <h3>{url.short_code}</h3>
-                    <div className="url-actions">
-                      <button 
-                        className="url-action-button" 
-                        onClick={() => handleCopyShortUrl(url.short_url)}
-                        title="Copy URL"
+                        style={{position: 'absolute', top: '10px', right: '10px'}}
                       >
-                        <FaCopy />
-                      </button>
-                      <a 
-                        href={url.short_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="url-action-button"
-                        title="Open URL"
-                      >
-                        <FaExternalLinkAlt />
-                      </a>
-                      <button 
-                        className="url-action-button url-delete-button" 
-                        onClick={() => handleDeleteUrl(url.short_code)}
-                        title="Delete URL"
-                        disabled={deletingUrlIds.includes(url.short_code)}
-                      >
-                        {deletingUrlIds.includes(url.short_code) ? '...' : <FaTrash />}
+                        <FaClipboard />
                       </button>
                     </div>
                   </div>
-                  <p className="long-url">{url.long_url}</p>
-                  <div className="url-card-meta">
-                    <span className="url-card-clicks">
-                      <FaChartBar /> {url.total_clicks || 0} clicks
-                    </span>
-                    <span className="url-card-date">
-                      Created: {new Date(url.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
+                </details>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '30px'}}>
-        <button 
-          className="primary-button"
-          onClick={() => navigate('/shorten')}
-        >
-          Shorten URL
-        </button>
-        
-        <button 
-          className="secondary-button"
-          onClick={handleSignOut}
-          disabled={loading}
-        >
-          {loading ? 'Processing...' : 'Sign Out'}
-        </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
