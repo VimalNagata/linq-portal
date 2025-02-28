@@ -1,7 +1,7 @@
 // src/auth/Profile.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaClipboard } from 'react-icons/fa';
+import { FaClipboard, FaLink, FaChartBar, FaTrash, FaExternalLinkAlt, FaCopy } from 'react-icons/fa';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAuth } from './AuthContext';
@@ -10,8 +10,24 @@ import '../App.css';
 const Profile = () => {
   const { currentUser, signOut } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
   const apiKey = localStorage.getItem('apiKey');
+  const token = localStorage.getItem('authToken');
+  
+  // We'll add URLsSection component implementation when the backend is ready
+  
+  // Add useEffect to clear notification after 3 seconds
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
+  // Implementation will be added when URL features are ready
 
   const handleSignOut = async () => {
     setLoading(true);
@@ -21,13 +37,23 @@ const Profile = () => {
   };
 
   const handleCopyAPIKey = () => {
-    navigator.clipboard.writeText(apiKey);
-    alert('API Key copied to clipboard');
+    try {
+      navigator.clipboard.writeText(apiKey);
+      setNotification({ type: 'success', message: 'API Key copied to clipboard' });
+    } catch (error) {
+      console.error('Failed to copy API Key:', error);
+      setNotification({ type: 'error', message: 'Failed to copy API Key' });
+    }
   };
   
   const handleCopyCode = (code) => {
-    navigator.clipboard.writeText(code);
-    alert('Code snippet copied to clipboard');
+    try {
+      navigator.clipboard.writeText(code);
+      setNotification({ type: 'success', message: 'Code snippet copied to clipboard' });
+    } catch (error) {
+      console.error('Failed to copy code:', error);
+      setNotification({ type: 'error', message: 'Failed to copy code' });
+    }
   };
 
   if (!currentUser) {
@@ -40,6 +66,11 @@ const Profile = () => {
 
   return (
     <div className="card">
+      {notification && (
+        <div className={`notification ${notification.type === 'success' ? 'notification-success' : 'notification-error'}`}>
+          {notification.message}
+        </div>
+      )}
       <h1>My Account</h1>
       
       <div className="profile-section">
@@ -175,6 +206,33 @@ short_url = data["short_url"]`)}
             </div>
           </div>
         )}
+      </div>
+      
+      {/* Coming Soon Section */}
+      <div className="profile-section" style={{marginTop: '30px'}}>
+        <div style={{marginBottom: '15px'}}>
+          <h2 style={{color: 'var(--text-dark)', fontSize: '1.2rem', margin: 0}}>
+            My Shortened URLs
+          </h2>
+        </div>
+        
+        <div style={{textAlign: 'center', padding: '30px 20px', color: 'var(--text-medium)', background: 'var(--background-light)', borderRadius: 'var(--border-radius-md)'}}>
+          <div className="empty-state-icon">
+            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="var(--primary-color)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <h3 style={{color: 'var(--text-dark)', marginBottom: '10px'}}>Coming Soon!</h3>
+          <p>We're working on this feature. Soon you'll be able to see all your shortened URLs here.</p>
+          <p style={{marginTop: '15px', fontSize: '0.9rem'}}>In the meantime, you can create new short URLs on the URL shortening page.</p>
+          <button 
+            className="primary-button" 
+            onClick={() => navigate('/shorten')} 
+            style={{marginTop: '20px'}}
+          >
+            Shorten a URL
+          </button>
+        </div>
       </div>
       
       <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '30px'}}>
