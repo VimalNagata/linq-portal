@@ -79,6 +79,110 @@
   font-weight: normal;
 }
 
+/* Subscription Section */
+.subscription-section {
+  margin-top: var(--spacing-md);
+}
+
+.subscription-loading {
+  text-align: center;
+  padding: var(--spacing-sm);
+  color: var(--text-medium);
+}
+
+.subscription-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.subscription-plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.plan-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 1.1rem;
+  width: fit-content;
+}
+
+.plan-badge.free {
+  background-color: var(--background-light);
+  color: var(--text-medium);
+}
+
+.plan-badge.pro {
+  background-color: #ebf7ff;
+  color: #0078d4;
+}
+
+.plan-badge.business {
+  background-color: #f2ebff;
+  color: #6b2eba;
+}
+
+.subscription-status {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+}
+
+.subscription-status.canceling p {
+  color: var(--error-color);
+}
+
+.subscription-limits {
+  padding: var(--spacing-sm);
+  background-color: var(--background-light);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--background-medium);
+  font-size: 0.9rem;
+  color: var(--text-medium);
+}
+
+.subscription-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.cancel-button {
+  background-color: transparent;
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-quick);
+}
+
+.cancel-button:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.cancel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.subscription-error {
+  background-color: rgba(255, 0, 0, 0.05);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+  color: var(--text-medium);
+}
+
+.subscription-error .primary-button {
+  margin-top: var(--spacing-md);
+}
+
 /* API Section */
 .api-section {
   margin-top: var(--spacing-md);

@@ -18,6 +18,7 @@ import {
   FaUserPlus,
   FaSignOutAlt,
   FaChartBar,
+  FaCreditCard,
 } from "react-icons/fa";
 import RegisterAPIKey from "./RegisterAPIKey";
 import ShortenURL from "./ShortenURL";
@@ -29,6 +30,9 @@ import ForgotPassword from "./auth/ForgotPassword";
 import HomePage from "./HomePage";
 import APIDocumentation from "./APIDocumentation";
 import Analytics from "./analytics/Analytics";
+import Pricing from "./payments/Pricing";
+import Checkout from "./payments/Checkout";
+import PaymentSuccess from "./payments/PaymentSuccess";
 import "./App.css";
 import "./api-docs.css";
 import "./iframe-mode.css";
@@ -138,6 +142,15 @@ const AppContent = () => {
                     onClick={closeMenu}
                   >
                     <FaChartBar className="nav-icon" /> Analytics
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className={isActive("/pricing")}
+                    to="/pricing"
+                    onClick={closeMenu}
+                  >
+                    <FaCreditCard className="nav-icon" /> Pricing
                   </Link>
                 </li>
                 <li className="mobile-only-menu-item">
@@ -254,6 +267,23 @@ const AppContent = () => {
           />
           <Route path="/signout" element={<SignOut />} />
           <Route path="/api-docs" element={<APIDocumentation />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment-success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </main>

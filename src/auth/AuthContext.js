@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userSubscription, setUserSubscription] = useState(null);
   
   // Clean up any mock data that might have been left over
   useEffect(() => {
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('authToken');
     if (token) {
       fetchUserProfile(token);
+      fetchSubscription(token);
     } else {
       setLoading(false);
     }
@@ -51,6 +53,32 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+  
+  const fetchSubscription = async (token) => {
+    try {
+      const response = await fetch('https://linq.red/api/subscription', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        // Default to free plan if there's an error
+        setUserSubscription({ plan: 'free', status: 'active' });
+        return;
+      }
+      
+      const subscriptionData = await response.json();
+      setUserSubscription(subscriptionData);
+      
+      // Update user with subscription plan
+      setCurrentUser(prev => prev ? {...prev, plan: subscriptionData.plan} : null);
+    } catch (err) {
+      console.error('Error fetching subscription:', err);
+      setUserSubscription({ plan: 'free', status: 'active' });
+    }
+  };
 
   const signIn = async (email, password) => {
     setLoading(true);
@@ -74,6 +102,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('apiKey', data.api_key);
       await fetchUserProfile(data.token);
+      await fetchSubscription(data.token);
       return true;
     } catch (err) {
       setError(err.message || 'Failed to sign in');
@@ -106,6 +135,10 @@ export const AuthProvider = ({ children }) => {
       
       // Fetch user profile with the new token
       await fetchUserProfile(data.token);
+      
+      // New users start with free plan
+      setUserSubscription({ plan: 'free', status: 'active' });
+      
       return true;
     } catch (err) {
       setError(err.message || 'Failed to sign up');
@@ -118,6 +151,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('apiKey');
     setCurrentUser(null);
+    setUserSubscription(null);
+  };
+  
+  const updateSubscription = (subscription) => {
+    setUserSubscription(subscription);
+    
+    // Update user object with new plan
+    if (subscription && currentUser) {
+      setCurrentUser({
+        ...currentUser,
+        plan: subscription.plan
+      });
+    }
   };
 
   // Get token from localStorage
@@ -130,7 +176,9 @@ export const AuthProvider = ({ children }) => {
     signIn,
     signUp,
     signOut,
-    token // Explicitly expose the token
+    token, // Explicitly expose the token
+    userSubscription, // Expose the subscription
+    updateSubscription // Expose method to update subscription
   };
 
   return (

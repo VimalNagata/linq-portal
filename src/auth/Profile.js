@@ -1,29 +1,72 @@
 // src/auth/Profile.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaClipboard, FaLink, FaChartBar, FaTrash, FaExternalLinkAlt, FaCopy, FaRedo } from 'react-icons/fa';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaClipboard, FaLink, FaChartBar, FaTrash, FaExternalLinkAlt, FaCopy, FaRedo, FaCreditCard } from 'react-icons/fa';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAuth } from './AuthContext';
+// Import services directly with fetch calls to avoid circular dependencies
 import '../App.css';
 import './Profile.css';
 
 const Profile = () => {
-  const { currentUser, signOut, token } = useAuth();
+  const { currentUser, signOut, token, updateSubscription: updateAuthSubscription } = useAuth();
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [urls, setUrls] = useState([]);
   const [urlsLoading, setUrlsLoading] = useState(true);
   const [urlsError, setUrlsError] = useState(null);
   const [deletingUrlIds, setDeletingUrlIds] = useState([]);
+  const [subscription, setSubscription] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const navigate = useNavigate();
   const apiKey = localStorage.getItem('apiKey');
   
-  // Fetch user's shortened URLs
+  // Fetch user's shortened URLs and subscription data
   useEffect(() => {
     fetchUserUrls();
+    fetchSubscriptionData();
   }, [token]);
   
+  const fetchSubscriptionData = async () => {
+    setSubscriptionLoading(true);
+    
+    try {
+      // Check if token exists
+      if (!token) {
+        setSubscriptionLoading(false);
+        return;
+      }
+      
+      // Direct API call instead of using service to avoid circular dependencies
+      const response = await fetch('https://linq.red/api/subscription', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch subscription');
+      }
+      
+      const subscriptionData = await response.json();
+      setSubscription(subscriptionData);
+      
+      // Also update the subscription in AuthContext
+      if (updateAuthSubscription) {
+        updateAuthSubscription(subscriptionData);
+      }
+    } catch (err) {
+      console.error('Error fetching subscription data:', err);
+      // Set subscription to default free plan if there's an error
+      setSubscription({ plan: 'free', status: 'active' });
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
   const fetchUserUrls = async () => {
     setUrlsLoading(true);
     setUrlsError(null);
@@ -147,6 +190,70 @@ const Profile = () => {
       console.error('Failed to copy code:', error);
       setNotification({ type: 'error', message: 'Failed to copy code' });
     }
+  };
+  
+  const handleCancelSubscription = async () => {
+    if (!window.confirm('Are you sure you want to cancel your subscription? You will be downgraded to the Free plan at the end of your current billing period.')) {
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      // Direct API call instead of using service to avoid circular dependencies
+      const response = await fetch('https://linq.red/api/cancel-subscription', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to cancel subscription');
+      }
+      
+      const result = await response.json();
+      
+      if (result && result.success) {
+        const updatedSubscription = {
+          ...subscription,
+          status: 'canceling',
+          cancel_at_period_end: true
+        };
+        setSubscription(updatedSubscription);
+        
+        // Also update the subscription in AuthContext
+        if (updateAuthSubscription) {
+          updateAuthSubscription(updatedSubscription);
+        }
+        setNotification({ type: 'success', message: 'Your subscription has been canceled and will end at the end of your current billing period.' });
+      }
+    } catch (error) {
+      console.error('Failed to cancel subscription:', error);
+      setNotification({ type: 'error', message: 'Failed to cancel subscription. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+  
+  // Helper function to get plan name
+  const getPlanName = (planId) => {
+    const plans = {
+      'free': 'Free',
+      'pro': 'Pro',
+      'business': 'Business'
+    };
+    
+    return plans[planId] || 'Unknown';
   };
 
   if (!currentUser) {
@@ -273,7 +380,7 @@ const Profile = () => {
           </div>
         </div>
         
-        {/* Sidebar - Account Info & API */}
+        {/* Sidebar - Account Info, Subscription & API */}
         <div className="profile-sidebar">
           <div className="profile-section account-section">
             <h2 className="section-title">Account Information</h2>
@@ -297,6 +404,85 @@ const Profile = () => {
                 {loading ? 'Processing...' : 'Sign Out'}
               </button>
             </div>
+          </div>
+          
+          {/* Subscription Information Section */}
+          <div className="profile-section subscription-section">
+            <h2 className="section-title">
+              <FaCreditCard className="section-icon" /> Subscription
+            </h2>
+            
+            {subscriptionLoading ? (
+              <div className="subscription-loading">
+                <p>Loading subscription details...</p>
+              </div>
+            ) : subscription ? (
+              <div className="subscription-details">
+                <div className="subscription-plan">
+                  <span className={`plan-badge ${subscription.plan}`}>
+                    {getPlanName(subscription.plan)}
+                  </span>
+                  
+                  {subscription.status === 'active' && subscription.plan !== 'free' && (
+                    <>
+                      {subscription.cancel_at_period_end ? (
+                        <div className="subscription-status canceling">
+                          <p>Your subscription will end on {formatDate(subscription.current_period_end)}</p>
+                        </div>
+                      ) : (
+                        <div className="subscription-status">
+                          <p>Renews on {formatDate(subscription.current_period_end)}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+                
+                <div className="subscription-limits">
+                  {subscription.plan === 'free' && (
+                    <p>Up to 50 shortened URLs</p>
+                  )}
+                  {subscription.plan === 'pro' && (
+                    <p>Up to 500 shortened URLs</p>
+                  )}
+                  {subscription.plan === 'business' && (
+                    <p>Unlimited shortened URLs</p>
+                  )}
+                </div>
+                
+                <div className="subscription-actions">
+                  {subscription.plan === 'free' ? (
+                    <Link to="/pricing" className="primary-button">
+                      Upgrade Plan
+                    </Link>
+                  ) : subscription.cancel_at_period_end ? (
+                    <Link to="/pricing" className="primary-button">
+                      Renew Subscription
+                    </Link>
+                  ) : (
+                    <>
+                      <Link to="/pricing" className="secondary-button">
+                        Change Plan
+                      </Link>
+                      <button 
+                        className="cancel-button"
+                        onClick={handleCancelSubscription}
+                        disabled={loading}
+                      >
+                        {loading ? 'Processing...' : 'Cancel Subscription'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="subscription-error">
+                <p>Unable to load subscription information</p>
+                <Link to="/pricing" className="primary-button">
+                  View Plans
+                </Link>
+              </div>
+            )}
           </div>
           
           {apiKey && (
